@@ -4,10 +4,12 @@
   "description": "Playwright TypeScript test automation framework",
   "scripts": {
     "test": "playwright test",
+    "test:smoke": "playwright test tests/content-sanity.spec.ts tests/navigation-header-dropdowns.spec.ts",
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui",
     "test:debug": "playwright test --debug",
-    "report": "playwright show-report"
+    "report": "playwright show-report",
+    "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
@@ -26,6 +28,7 @@
   "homepage": "https://github.com/qa-apps/PW_nanotech#readme",
   "devDependencies": {
     "@playwright/test": "^1.58.2",
+    "@types/node": "^25.3.3",
     "typescript": "^5.9.3"
   }
 }
