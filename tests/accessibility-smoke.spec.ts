@@ -1,8 +1,11 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Accessibility Smoke Tests', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+  });
+
   test('page has a main landmark', async ({ page }) => {
-    await page.goto('https://nanotech.icu', { waitUntil: 'domcontentloaded' });
     const main = page.locator('main, [role="main"]');
     if (await main.count()) {
       await expect(main.first()).toBeVisible();
@@ -10,7 +13,6 @@ test.describe('Accessibility Smoke Tests', () => {
   });
 
   test('all images have alt attributes', async ({ page }) => {
-    await page.goto('https://nanotech.icu', { waitUntil: 'domcontentloaded' });
     const images = page.locator('img');
     const count = await images.count();
     for (let i = 0; i < count; i++) {
@@ -20,14 +22,12 @@ test.describe('Accessibility Smoke Tests', () => {
   });
 
   test('headings follow logical hierarchy', async ({ page }) => {
-    await page.goto('https://nanotech.icu', { waitUntil: 'domcontentloaded' });
     const h1Count = await page.locator('h1').count();
     expect(h1Count).toBeGreaterThan(0);
     expect(h1Count).toBeLessThanOrEqual(3);
   });
 
   test('interactive elements are keyboard focusable', async ({ page }) => {
-    await page.goto('https://nanotech.icu', { waitUntil: 'domcontentloaded' });
     await page.keyboard.press('Tab');
     const focused = await page.evaluate(() => {
       const el = document.activeElement;
@@ -38,7 +38,6 @@ test.describe('Accessibility Smoke Tests', () => {
   });
 
   test('no empty links on the page', async ({ page }) => {
-    await page.goto('https://nanotech.icu', { waitUntil: 'domcontentloaded' });
     const links = page.locator('a');
     const count = await links.count();
     for (let i = 0; i < count; i++) {
@@ -54,7 +53,6 @@ test.describe('Accessibility Smoke Tests', () => {
   });
 
   test('color contrast: text is readable against background', async ({ page }) => {
-    await page.goto('https://nanotech.icu', { waitUntil: 'domcontentloaded' });
     const heading = page.locator('h1').first();
     const color = await heading.evaluate(el => getComputedStyle(el).color);
     const bgColor = await heading.evaluate(el => {

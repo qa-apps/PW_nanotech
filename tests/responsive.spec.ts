@@ -14,7 +14,7 @@ test.describe('Responsive layout smoke tests', () => {
   for (const vp of viewports) {
     test(`layout renders correctly at ${vp.name} (${vp.width}x${vp.height})`, async ({ page }) => {
       await page.setViewportSize({ width: vp.width, height: vp.height });
-      await page.goto('https://nanotech.icu', { waitUntil: 'domcontentloaded' });
+      await page.goto('/', { waitUntil: 'domcontentloaded' });
 
       await expect(page.getByText('Transforming Business', { exact: false }).first()).toBeVisible();
 
@@ -42,7 +42,7 @@ test.describe('Responsive layout smoke tests', () => {
 
   test('hamburger menu appears on mobile viewport', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('https://nanotech.icu', { waitUntil: 'domcontentloaded' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     const hamburger = page.locator('button[class*="menu"], button[aria-label*="menu"], [class*="hamburger"]').first();
     if (await hamburger.count()) {

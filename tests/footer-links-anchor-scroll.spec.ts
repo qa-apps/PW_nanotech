@@ -2,9 +2,12 @@ import { test, expect } from '../fixtures/test-fixture';
 import { footerLinkLabels } from '../utils/site-data';
 
 test.describe('Footer links + anchor scroll', () => {
+  test.beforeEach(async ({ home }) => {
+    await home.goto('/');
+  });
+
   for (const label of footerLinkLabels) {
     test(`footer link "${label}" is clickable`, async ({ page, home }) => {
-      await home.goto('/');
       const footer = page.locator('footer');
       await footer.scrollIntoViewIfNeeded();
 

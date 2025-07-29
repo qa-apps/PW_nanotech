@@ -1,8 +1,11 @@
 import { test, expect } from '../fixtures/test-fixture';
 
 test.describe('Registration Form', () => {
-  test('Register tab is accessible from login modal', async ({ page, home }) => {
+  test.beforeEach(async ({ home }) => {
     await home.goto('/');
+  });
+
+  test('Register tab is accessible from login modal', async ({ page, home }) => {
     await page.getByText('Login', { exact: true }).first().click();
     const registerTab = page.getByText('Register', { exact: true }).first();
     if (await registerTab.isVisible()) {
@@ -12,7 +15,6 @@ test.describe('Registration Form', () => {
   });
 
   test('registration form has all required fields', async ({ page, home }) => {
-    await home.goto('/');
     await page.getByText('Login', { exact: true }).first().click();
     const registerTab = page.getByText('Register', { exact: true }).first();
     if (await registerTab.isVisible()) {
@@ -24,7 +26,6 @@ test.describe('Registration Form', () => {
   });
 
   test('Create Account button is visible in register form', async ({ page, home }) => {
-    await home.goto('/');
     await page.getByText('Login', { exact: true }).first().click();
     const registerTab = page.getByText('Register', { exact: true }).first();
     if (await registerTab.isVisible()) {

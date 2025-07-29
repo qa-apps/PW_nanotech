@@ -2,14 +2,16 @@ import { test, expect } from '../fixtures/test-fixture';
 import { ROICalculatorPage } from '../pages/roi-calculator.page';
 
 test.describe('ROI Calculator', () => {
-  test('calculator section is visible on page', async ({ page, home }) => {
+  test.beforeEach(async ({ home }) => {
     await home.goto('/');
+  });
+
+  test('calculator section is visible on page', async ({ page, home }) => {
     const roi = new ROICalculatorPage(page);
     await roi.scrollToCalculator();
   });
 
   test('calculate button produces results', async ({ page, home }) => {
-    await home.goto('/');
     const roi = new ROICalculatorPage(page);
     await roi.scrollToCalculator();
     await roi.fillManualHours('160');
@@ -22,7 +24,6 @@ test.describe('ROI Calculator', () => {
   });
 
   test('download ROI summary button is visible after calculation', async ({ page, home }) => {
-    await home.goto('/');
     const roi = new ROICalculatorPage(page);
     await roi.scrollToCalculator();
     await roi.fillManualHours('100');
@@ -35,7 +36,6 @@ test.describe('ROI Calculator', () => {
   });
 
   test('Get Custom Automation Quote CTA is visible', async ({ page, home }) => {
-    await home.goto('/');
     await expect(
       page.getByText('Get Custom Automation Quote', { exact: false }).first()
     ).toBeVisible();

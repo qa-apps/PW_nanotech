@@ -1,8 +1,11 @@
 import { test } from '../fixtures/test-fixture';
 
 test.describe('AI Widget', () => {
-  test('chat window opens and mode buttons are clickable', async ({ home, aiWidget }) => {
+  test.beforeEach(async ({ home }) => {
     await home.goto('/');
+  });
+
+  test('chat window opens and mode buttons are clickable', async ({ home, aiWidget }) => {
     await aiWidget.openChatWindow();
 
     await aiWidget.clickMode('General');
@@ -14,7 +17,6 @@ test.describe('AI Widget', () => {
 
   test('simple prompt returns non-empty response without obvious UI errors', async ({ home, aiWidget }) => {
     test.setTimeout(120_000);
-    await home.goto('/');
     await aiWidget.openChatWindow();
     await aiWidget.clickMode('General');
     await aiWidget.ask('Hi, how are you?');

@@ -2,9 +2,12 @@ import { test, expect } from '../fixtures/test-fixture';
 import { comboCardLabels } from '../utils/site-data';
 
 test.describe('Interactive Combo AI cards', () => {
+  test.beforeEach(async ({ home }) => {
+    await home.goto('/');
+  });
+
   for (const label of comboCardLabels) {
     test(`card "${label}" is clickable and shows context`, async ({ page, home, combo }) => {
-      await home.goto('/');
       await combo.clickCard(label);
 
       const anyContextVisible =
@@ -15,7 +18,6 @@ test.describe('Interactive Combo AI cards', () => {
   }
 
   test('tooltip/popover can be closed with Escape', async ({ page, home, combo }) => {
-    await home.goto('/');
     await combo.hoverCard(comboCardLabels[0]);
     await page.keyboard.press('Escape');
     const popup = page.locator('[role="tooltip"], .tooltip, .popover');

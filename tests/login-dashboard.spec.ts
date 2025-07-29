@@ -6,15 +6,17 @@ const TEST_EMAIL = 'test_email_001007@proton.me';
 const TEST_PASSWORD = 'test_email_001007';
 
 test.describe('Login and Dashboard', () => {
-  test('login modal opens and contains email/password fields', async ({ page, home }) => {
+  test.beforeEach(async ({ home }) => {
     await home.goto('/');
+  });
+
+  test('login modal opens and contains email/password fields', async ({ page, home }) => {
     const login = new LoginPage(page);
     await login.openLoginModal();
     await login.expectLoginModalVisible();
   });
 
   test('user can log in with valid credentials', async ({ page, home }) => {
-    await home.goto('/');
     const login = new LoginPage(page);
     await login.login(TEST_EMAIL, TEST_PASSWORD);
 
@@ -23,7 +25,6 @@ test.describe('Login and Dashboard', () => {
   });
 
   test('dashboard tabs Messages, Orders, Notes are clickable', async ({ page, home }) => {
-    await home.goto('/');
     const login = new LoginPage(page);
     await login.login(TEST_EMAIL, TEST_PASSWORD);
 
@@ -41,7 +42,6 @@ test.describe('Login and Dashboard', () => {
   });
 
   test('user can write and save notes', async ({ page, home }) => {
-    await home.goto('/');
     const login = new LoginPage(page);
     await login.login(TEST_EMAIL, TEST_PASSWORD);
 
@@ -52,7 +52,6 @@ test.describe('Login and Dashboard', () => {
   });
 
   test('user can logout from dashboard', async ({ page, home }) => {
-    await home.goto('/');
     const login = new LoginPage(page);
     await login.login(TEST_EMAIL, TEST_PASSWORD);
 

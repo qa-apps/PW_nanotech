@@ -3,9 +3,11 @@ import { expectImagesLoaded } from '../utils/assertions';
 import { keyContentTexts } from '../utils/site-data';
 
 test.describe('Content sanity', () => {
-  test('key texts are visible and CTAs are active', async ({ page, home }) => {
+  test.beforeEach(async ({ home }) => {
     await home.goto('/');
+  });
 
+  test('key texts are visible and CTAs are active', async ({ page, home }) => {
     for (const text of keyContentTexts) {
       await expect(page.getByText(text, { exact: false }).first()).toBeVisible();
     }
@@ -16,12 +18,10 @@ test.describe('Content sanity', () => {
   });
 
   test('images are not broken', async ({ page, home }) => {
-    await home.goto('/');
     await expectImagesLoaded(page);
   });
 
   test('theme switcher has all expected options', async ({ home, theme }) => {
-    await home.goto('/');
     await theme.verifyThemeOptionsVisible();
   });
 

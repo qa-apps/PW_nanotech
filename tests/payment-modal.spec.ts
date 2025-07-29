@@ -1,8 +1,11 @@
 import { test, expect } from '../fixtures/test-fixture';
 
 test.describe('Payment Modal', () => {
-  test('payment modal displays admin contact info', async ({ page, home }) => {
+  test.beforeEach(async ({ home }) => {
     await home.goto('/');
+  });
+
+  test('payment modal displays admin contact info', async ({ page, home }) => {
     const paymentTrigger = page.getByText('Payment', { exact: false }).first();
     if (await paymentTrigger.isVisible()) {
       await paymentTrigger.click();
@@ -16,7 +19,6 @@ test.describe('Payment Modal', () => {
   });
 
   test('payment modal can be closed', async ({ page, home }) => {
-    await home.goto('/');
     const paymentTrigger = page.getByText('Payment', { exact: false }).first();
     if (await paymentTrigger.isVisible()) {
       await paymentTrigger.click();
