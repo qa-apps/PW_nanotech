@@ -6,21 +6,20 @@ export type ThemeOption = (typeof THEMES)[number];
 export class ThemePage {
   constructor(private readonly page: Page) {}
 
-  async openThemeMenu() {
-    const trigger = this.page.getByText(/^Light$|^Dark$|^Aurora Blue$|^Glass Dawn$/).first();
-    await expect(trigger).toBeVisible();
-    await trigger.click();
+  private themeSelect() {
+    return this.page.getByLabel('Select background theme');
   }
 
   async selectTheme(option: ThemeOption) {
-    await this.openThemeMenu();
-    await this.page.getByText(option, { exact: true }).first().click();
+    await expect(this.themeSelect()).toBeVisible();
+    await this.themeSelect().selectOption(option);
   }
 
   async verifyThemeOptionsVisible() {
-    await this.openThemeMenu();
+    const select = this.themeSelect();
+    await expect(select).toBeVisible();
     for (const option of THEMES) {
-      await expect(this.page.getByText(option, { exact: true }).first()).toBeVisible();
+      await expect(select.locator('option', { hasText: option })).toBeAttached();
     }
   }
 }

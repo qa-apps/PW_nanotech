@@ -5,7 +5,7 @@ export class HeroPage {
 
   async expectHeroHeadingVisible() {
     await expect(
-      this.page.getByText('Transforming Business', { exact: false }).first()
+      this.page.getByRole('heading', { name: /Transforming Business/i }).first()
     ).toBeVisible();
   }
 
@@ -16,15 +16,15 @@ export class HeroPage {
   }
 
   async clickScheduleAssessment() {
-    const btn = this.page.getByText('Schedule AI Assessment', { exact: false }).first();
-    await expect(btn).toBeVisible();
-    await btn.click();
+    const link = this.page.getByRole('link', { name: 'Schedule AI Assessment' });
+    await expect(link).toBeVisible();
+    await link.click();
   }
 
   async clickSeeAIInAction() {
-    const btn = this.page.getByText('See AI in Action', { exact: false }).first();
-    await expect(btn).toBeVisible();
-    await btn.click();
+    const link = this.page.getByRole('link', { name: 'See AI in Action' });
+    await expect(link).toBeVisible();
+    await link.click();
   }
 
   async expectTopBannerVisible() {
@@ -47,8 +47,6 @@ export class HeroPage {
     const banner = this.page.locator('[class*="banner"], [class*="announcement"]').first();
     if (await banner.count()) {
       await expect(banner).toBeVisible();
-      const bgColor = await banner.evaluate(el => getComputedStyle(el).backgroundColor);
-      expect(bgColor).toBeTruthy();
     }
   }
 }

@@ -1,20 +1,16 @@
-import { expect, type Locator, type Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 
 export class FAQPage {
   constructor(private readonly page: Page) {}
 
-  private faqSection(): Locator {
-    return this.page.locator('#faq, [class*="faq"]').first();
-  }
-
   async scrollToFAQ() {
-    const heading = this.page.getByText('Got Questions? We Have Answers', { exact: false }).first();
+    const heading = this.page.getByRole('heading', { name: 'Got Questions? We Have Answers' });
     await heading.scrollIntoViewIfNeeded();
     await expect(heading).toBeVisible();
   }
 
   async clickQuestion(questionText: string) {
-    const question = this.page.getByText(questionText, { exact: false }).first();
+    const question = this.page.getByRole('button', { name: new RegExp(questionText, 'i') });
     await expect(question).toBeVisible();
     await question.click();
   }
@@ -36,7 +32,9 @@ export class FAQPage {
     ];
 
     for (const q of questions) {
-      await expect(this.page.getByText(q, { exact: false }).first()).toBeVisible();
+      await expect(
+        this.page.getByRole('button', { name: new RegExp(q, 'i') })
+      ).toBeVisible();
     }
   }
 }

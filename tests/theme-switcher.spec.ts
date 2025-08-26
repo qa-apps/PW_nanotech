@@ -7,25 +7,24 @@ test.describe('Theme Switcher', () => {
     await home.goto('/');
   });
 
-  test('theme menu opens and shows all 4 options', async ({ home, theme }) => {
+  test('theme select has all 4 options', async ({ theme }) => {
     await theme.verifyThemeOptionsVisible();
   });
 
   for (const themeName of THEMES) {
-    test(`selecting "${themeName}" theme applies without errors`, async ({ page, home, theme }) => {
+    test(`selecting "${themeName}" theme applies without errors`, async ({ page, theme }) => {
+      const errors: string[] = [];
+      page.on('pageerror', err => errors.push(err.message));
+
       await theme.selectTheme(themeName);
       await page.waitForTimeout(500);
 
       await expect(page.getByText('Transforming Business', { exact: false }).first()).toBeVisible();
-
-      const errors: string[] = [];
-      page.on('pageerror', err => errors.push(err.message));
-      await page.waitForTimeout(1000);
       expect(errors).toHaveLength(0);
     });
   }
 
-  test('theme persists after page reload', async ({ page, home, theme }) => {
+  test('theme persists after page reload', async ({ page, theme }) => {
     await theme.selectTheme('Dark');
     await page.waitForTimeout(500);
     await page.reload();

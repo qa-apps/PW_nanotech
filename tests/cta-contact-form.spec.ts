@@ -16,7 +16,6 @@ test.describe('CTA / Schedule form', () => {
       fullName: randomName(),
       email: randomEmail(),
       company: randomCompany(),
-      serviceInterest: 'Automated QA validation',
       message: randomMessage()
     });
     await contact.selectService(formServiceOptions[0]);

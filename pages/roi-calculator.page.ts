@@ -3,43 +3,34 @@ import { expect, type Page } from '@playwright/test';
 export class ROICalculatorPage {
   constructor(private readonly page: Page) {}
 
-  private calculatorSection() {
-    return this.page.locator('[class*="calculator"], [class*="roi"]').first();
-  }
-
   async scrollToCalculator() {
-    const heading = this.page.getByText('Quick ROI Calculator', { exact: false }).first();
+    const heading = this.page.getByRole('heading', { name: 'Quick ROI Calculator' });
     await heading.scrollIntoViewIfNeeded();
     await expect(heading).toBeVisible();
   }
 
   async fillManualHours(hours: string) {
-    const input = this.page.locator('input').filter({ hasText: '' }).nth(0);
-    await input.fill(hours);
+    await this.page.getByLabel('Manual hours per month').fill(hours);
   }
 
   async fillHourlyCost(cost: string) {
-    const input = this.page.locator('input').filter({ hasText: '' }).nth(1);
-    await input.fill(cost);
+    await this.page.getByLabel('Average hourly cost (USD)').fill(cost);
   }
 
   async fillAutomationCoverage(percent: string) {
-    const input = this.page.locator('input').filter({ hasText: '' }).nth(2);
-    await input.fill(percent);
+    await this.page.getByLabel('Automation coverage (%)').fill(percent);
   }
 
   async fillMonthlySoftwareCost(cost: string) {
-    const input = this.page.locator('input').filter({ hasText: '' }).nth(3);
-    await input.fill(cost);
+    await this.page.getByLabel('Monthly software/tool cost (USD)').fill(cost);
   }
 
   async fillSetupCost(cost: string) {
-    const input = this.page.locator('input').filter({ hasText: '' }).nth(4);
-    await input.fill(cost);
+    await this.page.getByLabel('One-time setup cost (USD)').fill(cost);
   }
 
   async clickCalculate() {
-    await this.page.getByRole('button', { name: /Calculate ROI/i }).click();
+    await this.page.getByRole('button', { name: 'Calculate ROI' }).click();
   }
 
   async expectResultsVisible() {
@@ -50,7 +41,7 @@ export class ROICalculatorPage {
 
   async expectDownloadButtonVisible() {
     await expect(
-      this.page.getByRole('button', { name: /Download ROI Summary/i })
+      this.page.getByRole('button', { name: 'Download ROI Summary' })
     ).toBeVisible();
   }
 }

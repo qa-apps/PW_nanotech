@@ -5,7 +5,7 @@ export class HomePage {
 
   async goto(path = '/') {
     await this.page.goto(path, { waitUntil: 'domcontentloaded' });
-    await expect(this.page.getByRole('link', { name: 'NanoTech Hub' })).toBeVisible();
+    await expect(this.page.getByRole('heading', { name: 'NanoTech Hub' }).first()).toBeVisible();
   }
 
   async openTopBannerLearnMore() {

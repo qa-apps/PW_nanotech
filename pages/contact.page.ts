@@ -4,16 +4,11 @@ export type ContactPayload = {
   fullName: string;
   email: string;
   company: string;
-  serviceInterest: string;
   message: string;
 };
 
 export class ContactPage {
   constructor(private readonly page: Page) {}
-
-  private formRoot() {
-    return this.page.locator('form').first();
-  }
 
   async open() {
     await this.page.goto('/#contact', { waitUntil: 'domcontentloaded' });
@@ -21,31 +16,28 @@ export class ContactPage {
   }
 
   async fillForm(payload: ContactPayload) {
-    const form = this.formRoot();
-    const textInputs = form.locator('input');
-    await textInputs.nth(0).fill(payload.fullName);
-    await textInputs.nth(1).fill(payload.email);
-    await textInputs.nth(2).fill(payload.company);
-    await textInputs.nth(3).fill(payload.serviceInterest);
-    await form.locator('textarea').first().fill(payload.message);
+    await this.page.getByRole('textbox', { name: 'Full Name' }).fill(payload.fullName);
+    await this.page.getByRole('textbox', { name: 'Email Address' }).fill(payload.email);
+    await this.page.getByRole('textbox', { name: 'Company' }).fill(payload.company);
+    await this.page.getByRole('textbox', { name: 'Message' }).fill(payload.message);
   }
 
   async selectService(serviceName: string) {
-    const select = this.formRoot().locator('select').first();
+    const select = this.page.getByLabel('Service Interest');
     await expect(select).toBeVisible();
-    await select.selectOption({ label: serviceName });
+    await select.selectOption(serviceName);
   }
 
   async expectServiceOptionPresent(serviceName: string) {
-    const option = this.formRoot().locator('select option', { hasText: serviceName }).first();
-    await expect(option).toBeVisible();
+    const select = this.page.getByLabel('Service Interest');
+    await expect(select.locator('option', { hasText: serviceName })).toBeAttached();
   }
 
   async submit() {
-    await this.formRoot().getByRole('button', { name: 'Send Message' }).click();
+    await this.page.getByRole('button', { name: 'Send Message' }).click();
   }
 
   async expectSuccessToast() {
-    await expect(this.page.getByText('Message sent successfully!', { exact: false })).toBeVisible();
+    await expect(this.page.getByText('Message sent successfully', { exact: false })).toBeVisible();
   }
 }

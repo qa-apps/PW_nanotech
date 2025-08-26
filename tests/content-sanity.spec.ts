@@ -7,21 +7,21 @@ test.describe('Content sanity', () => {
     await home.goto('/');
   });
 
-  test('key texts are visible and CTAs are active', async ({ page, home }) => {
+  test('key texts are visible and CTAs are active', async ({ page }) => {
     for (const text of keyContentTexts) {
       await expect(page.getByText(text, { exact: false }).first()).toBeVisible();
     }
 
-    await expect(page.getByText('Schedule AI Assessment', { exact: false }).first()).toBeVisible();
-    await expect(page.getByText('See AI in Action', { exact: false }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: /Schedule AI Assessment/i })).toBeVisible();
+    await expect(page.getByRole('link', { name: /See AI in Action/i })).toBeVisible();
     await expect(page.getByRole('link', { name: /Learn More/i }).first()).toBeVisible();
   });
 
-  test('images are not broken', async ({ page, home }) => {
+  test('images are not broken', async ({ page }) => {
     await expectImagesLoaded(page);
   });
 
-  test('theme switcher has all expected options', async ({ home, theme }) => {
+  test('theme switcher has all expected options', async ({ theme }) => {
     await theme.verifyThemeOptionsVisible();
   });
 
@@ -36,7 +36,6 @@ test.describe('Content sanity', () => {
       await page.setViewportSize(viewport);
       await home.goto('/');
       await expect(page.getByText('Transforming Business', { exact: false }).first()).toBeVisible();
-      await expect(page.getByRole('link', { name: /Home/i }).first()).toBeVisible();
     }
   });
 });

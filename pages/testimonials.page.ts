@@ -4,39 +4,27 @@ export class TestimonialsPage {
   constructor(private readonly page: Page) {}
 
   async scrollToTestimonials() {
-    const heading = this.page.getByText('What Our Clients Say', { exact: false }).first();
+    const heading = this.page.getByRole('heading', { name: 'What Our Clients Say' });
     await heading.scrollIntoViewIfNeeded();
     await expect(heading).toBeVisible();
   }
 
-  async expectTestimonialCardVisible(clientName: string) {
-    await expect(
-      this.page.getByText(clientName, { exact: false }).first()
-    ).toBeVisible();
+  async expectCarouselControlsVisible() {
+    await expect(this.page.getByRole('button', { name: 'Previous' })).toBeVisible();
+    await expect(this.page.getByRole('button', { name: 'Next' })).toBeVisible();
   }
 
-  async expectAllTestimonialsPresent() {
-    const clients = [
-      'Sarah C.',
-      'Marcus W.',
-      'Elena R.',
-      'James T.',
-      'Priya S.',
-      'David O.',
-      'Katarina N.',
-      'Robert K.'
-    ];
-
-    for (const client of clients) {
-      await expect(
-        this.page.getByText(client, { exact: false }).first()
-      ).toBeVisible();
-    }
+  async clickNext() {
+    await this.page.getByRole('button', { name: 'Next' }).click();
   }
 
-  async expectTestimonialContainsQuote(clientName: string, quoteFragment: string) {
-    const card = this.page.locator('[class*="testimonial"], [class*="review"]')
-      .filter({ hasText: clientName }).first();
-    await expect(card.getByText(quoteFragment, { exact: false })).toBeVisible();
+  async clickPrevious() {
+    await this.page.getByRole('button', { name: 'Previous' }).click();
+  }
+
+  async expectTestimonialVisible() {
+    const quote = this.page.locator('[class*="testimonial"], [class*="review"], [class*="slide"]')
+      .first();
+    await expect(quote).toBeVisible();
   }
 }

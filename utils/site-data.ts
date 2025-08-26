@@ -125,7 +125,10 @@ export const comboCardLabels = [
 ];
 
 export const formServiceOptions = [
+  'Process Automation (RPA + AI)',
   'Custom AI Model Development',
+  'AI Integration & Implementation',
   'Business Process Analysis',
-  'AI Testing & Quality Assurance'
+  'AI Testing & Quality Assurance',
+  'AI Strategy Consulting'
 ];

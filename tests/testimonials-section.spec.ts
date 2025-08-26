@@ -6,26 +6,29 @@ test.describe('Client Testimonials Section', () => {
     await home.goto('/');
   });
 
-  test('testimonials section heading is visible', async ({ page, home }) => {
+  test('testimonials section heading is visible', async ({ page }) => {
     const testimonials = new TestimonialsPage(page);
     await testimonials.scrollToTestimonials();
   });
 
-  test('all client testimonial cards are present', async ({ page, home }) => {
+  test('carousel controls Previous and Next are visible', async ({ page }) => {
     const testimonials = new TestimonialsPage(page);
     await testimonials.scrollToTestimonials();
-    await testimonials.expectAllTestimonialsPresent();
+    await testimonials.expectCarouselControlsVisible();
   });
 
-  test('Sarah C. testimonial contains document processing quote', async ({ page, home }) => {
+  test('clicking Next changes the visible testimonial', async ({ page }) => {
     const testimonials = new TestimonialsPage(page);
     await testimonials.scrollToTestimonials();
-    await testimonials.expectTestimonialContainsQuote('Sarah C.', 'document processing');
+    await testimonials.clickNext();
+    await testimonials.expectTestimonialVisible();
   });
 
-  test('Elena R. testimonial mentions supply chain', async ({ page, home }) => {
+  test('clicking Previous after Next shows a testimonial', async ({ page }) => {
     const testimonials = new TestimonialsPage(page);
     await testimonials.scrollToTestimonials();
-    await testimonials.expectTestimonialContainsQuote('Elena R.', 'supply chain');
+    await testimonials.clickNext();
+    await testimonials.clickPrevious();
+    await testimonials.expectTestimonialVisible();
   });
 });

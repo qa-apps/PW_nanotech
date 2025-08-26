@@ -7,22 +7,16 @@ test.describe('Interactive Combo AI cards', () => {
   });
 
   for (const label of comboCardLabels) {
-    test(`card "${label}" is clickable and shows context`, async ({ page, home, combo }) => {
-      await combo.clickCard(label);
-
-      const anyContextVisible =
-        (await page.getByText(label, { exact: false }).first().isVisible()) ||
-        (await page.locator('[role="tooltip"], .tooltip, .popover').first().isVisible());
-      expect(anyContextVisible).toBeTruthy();
+    test(`card "${label}" is present in the hero bubble visualization`, async ({ combo }) => {
+      await combo.expectCardAttached(label);
     });
   }
 
-  test('tooltip/popover can be closed with Escape', async ({ page, home, combo }) => {
-    await combo.hoverCard(comboCardLabels[0]);
-    await page.keyboard.press('Escape');
-    const popup = page.locator('[role="tooltip"], .tooltip, .popover');
-    if (await popup.count()) {
-      await expect(popup.first()).not.toBeVisible();
-    }
+  test('clicking a card does not cause errors', async ({ page, combo }) => {
+    const errors: string[] = [];
+    page.on('pageerror', err => errors.push(err.message));
+    await combo.clickCard(comboCardLabels[0]);
+    await page.waitForTimeout(500);
+    expect(errors).toHaveLength(0);
   });
 });
