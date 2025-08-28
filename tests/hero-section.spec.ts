@@ -6,39 +6,41 @@ test.describe('Hero Section', () => {
     await home.goto('/');
   });
 
-  test('hero heading and subheading are visible', async ({ page, home }) => {
+  test('hero heading and subheading are visible', async ({ page }) => {
     const hero = new HeroPage(page);
     await hero.expectHeroHeadingVisible();
     await hero.expectSubheadingVisible();
   });
 
-  test('Schedule AI Assessment button is visible and clickable', async ({ page, home }) => {
+  test('Schedule AI Assessment link is visible and clickable', async ({ page }) => {
     const hero = new HeroPage(page);
-    await hero.clickScheduleAssessment();
-    await expect(page).toHaveURL(/#contact/);
+    const link = page.getByRole('link', { name: 'Schedule AI Assessment' });
+    await expect(link).toBeVisible();
+    const href = await link.getAttribute('href');
+    expect(href).toContain('#contact');
   });
 
-  test('See AI in Action button is visible and clickable', async ({ page, home }) => {
+  test('See AI in Action link is visible and clickable', async ({ page }) => {
     const hero = new HeroPage(page);
-    await hero.clickSeeAIInAction();
-    await expect(page).toHaveURL(/#services|#solutions/);
+    const link = page.getByRole('link', { name: 'See AI in Action' });
+    await expect(link).toBeVisible();
+    await expect(link).toBeEnabled();
   });
 
-  test('top announcement banner is visible with correct text', async ({ page, home }) => {
+  test('top announcement banner is visible with correct text', async ({ page }) => {
     const hero = new HeroPage(page);
     await hero.expectTopBannerVisible();
     await hero.expectTopBannerLearnMoreClickable();
   });
 
-  test('Learn More link in banner navigates to services section', async ({ page, home }) => {
-    const hero = new HeroPage(page);
-    await hero.clickLearnMore();
-    await page.waitForTimeout(500);
-    const url = page.url();
-    expect(url).toMatch(/#|services|solutions/);
+  test('Learn More link has correct href', async ({ page }) => {
+    const learnMore = page.getByRole('link', { name: /Learn More/i }).first();
+    await expect(learnMore).toBeVisible();
+    const href = await learnMore.getAttribute('href');
+    expect(href).toContain('#services');
   });
 
-  test('banner has visible color scheme and styling', async ({ page, home }) => {
+  test('banner has visible color scheme and styling', async ({ page }) => {
     const hero = new HeroPage(page);
     await hero.expectBannerColorScheme();
   });

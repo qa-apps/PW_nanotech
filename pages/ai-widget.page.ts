@@ -1,7 +1,15 @@
-import { expect, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 
 export class AIWidgetPage {
   constructor(private readonly page: Page) {}
+
+  private chatContainer(): Locator {
+    return this.page.locator('[class*="chat-widget"], [class*="chatbot"]').first();
+  }
+
+  private chatSendButton(): Locator {
+    return this.page.locator('button.chat-send-btn, button[aria-label="Send message"]').first();
+  }
 
   async openChatWindow() {
     await this.page.getByRole('button', { name: 'Open chat' }).click();
@@ -18,7 +26,11 @@ export class AIWidgetPage {
     const input = this.page.getByRole('textbox', { name: 'Type your message' });
     await expect(input).toBeVisible();
     await input.fill(prompt);
-    await this.page.getByRole('button', { name: 'Send message' }).click();
+    await this.chatSendButton().click();
+  }
+
+  async expectSendButtonVisible() {
+    await expect(this.chatSendButton()).toBeVisible();
   }
 
   async expectNonEmptyResponse() {

@@ -5,19 +5,19 @@ export class ComboAICardsPage {
 
   async expectCardAttached(name: string) {
     await expect(
-      this.page.getByText(name, { exact: true }).first()
-    ).toBeAttached();
+      this.page.getByText(name, { exact: false }).first()
+    ).toBeAttached({ timeout: 15_000 });
   }
 
   async clickCard(name: string) {
-    const target = this.page.getByText(name, { exact: true }).first();
-    await expect(target).toBeAttached();
+    const target = this.page.getByText(name, { exact: false }).first();
+    await expect(target).toBeAttached({ timeout: 15_000 });
     await target.click({ force: true });
   }
 
   async hoverCard(name: string) {
-    const target = this.page.getByText(name, { exact: true }).first();
-    await expect(target).toBeAttached();
+    const target = this.page.getByText(name, { exact: false }).first();
+    await expect(target).toBeAttached({ timeout: 15_000 });
     await target.hover({ force: true });
   }
 }

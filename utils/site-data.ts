@@ -98,6 +98,7 @@ export const footerLinkLabels = [
   'ROI & Benefits',
   'Contact',
   'AI Assessment',
+  'ROI Calculator',
   'Case Studies',
   'Get Demo'
 ];

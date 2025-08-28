@@ -19,7 +19,7 @@ export class ContactPage {
     await this.page.getByRole('textbox', { name: 'Full Name' }).fill(payload.fullName);
     await this.page.getByRole('textbox', { name: 'Email Address' }).fill(payload.email);
     await this.page.getByRole('textbox', { name: 'Company' }).fill(payload.company);
-    await this.page.getByRole('textbox', { name: 'Message' }).fill(payload.message);
+    await this.page.locator('textarea#message').fill(payload.message);
   }
 
   async selectService(serviceName: string) {

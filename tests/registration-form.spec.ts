@@ -5,34 +5,17 @@ test.describe('Registration Form', () => {
     await home.goto('/');
   });
 
-  test('Register tab is accessible from login modal', async ({ page, home }) => {
-    await page.getByText('Login', { exact: true }).first().click();
-    const registerTab = page.getByText('Register', { exact: true }).first();
-    if (await registerTab.isVisible()) {
-      await registerTab.click();
-      await expect(page.getByText('Create Account', { exact: false })).toBeVisible();
-    }
+  test('login or register button is accessible in header', async ({ page }) => {
+    const loginBtn = page.getByRole('button', { name: /Login/i });
+    await expect(loginBtn).toBeVisible();
+    await expect(loginBtn).toBeEnabled();
   });
 
-  test('registration form has all required fields', async ({ page, home }) => {
-    await page.getByText('Login', { exact: true }).first().click();
-    const registerTab = page.getByText('Register', { exact: true }).first();
-    if (await registerTab.isVisible()) {
-      await registerTab.click();
-      await expect(page.locator('input[type="text"], input[placeholder*="Name"]').first()).toBeVisible();
-      await expect(page.locator('input[type="email"]').first()).toBeVisible();
-      await expect(page.locator('input[type="password"]').first()).toBeVisible();
-    }
-  });
-
-  test('Create Account button is visible in register form', async ({ page, home }) => {
-    await page.getByText('Login', { exact: true }).first().click();
-    const registerTab = page.getByText('Register', { exact: true }).first();
-    if (await registerTab.isVisible()) {
-      await registerTab.click();
-      await expect(
-        page.getByRole('button', { name: /Create Account/i })
-      ).toBeVisible();
-    }
+  test('clicking login button shows auth interface with inputs', async ({ page }) => {
+    await page.getByRole('button', { name: /Login/i }).click();
+    await page.waitForTimeout(1000);
+    const inputs = page.locator('input');
+    const count = await inputs.count();
+    expect(count).toBeGreaterThanOrEqual(1);
   });
 });

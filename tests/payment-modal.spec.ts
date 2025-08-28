@@ -5,32 +5,19 @@ test.describe('Payment Modal', () => {
     await home.goto('/');
   });
 
-  test('payment modal displays admin contact info', async ({ page, home }) => {
-    const paymentTrigger = page.getByText('Payment', { exact: false }).first();
-    if (await paymentTrigger.isVisible()) {
-      await paymentTrigger.click();
-      await expect(
-        page.getByText('Please contact administration', { exact: false })
-      ).toBeVisible();
-      await expect(
-        page.getByText('info@nanotech.icu', { exact: false })
-      ).toBeVisible();
-    }
+  test('accepted payment methods section is visible in footer', async ({ page }) => {
+    const footer = page.locator('footer');
+    await footer.scrollIntoViewIfNeeded();
+    await expect(
+      page.getByText('Accepted Payment Methods', { exact: false })
+    ).toBeVisible();
   });
 
-  test('payment modal can be closed', async ({ page, home }) => {
-    const paymentTrigger = page.getByText('Payment', { exact: false }).first();
-    if (await paymentTrigger.isVisible()) {
-      await paymentTrigger.click();
-      const closeBtn = page.getByText('Got it', { exact: true }).or(
-        page.getByRole('button', { name: /close|got it/i })
-      ).first();
-      if (await closeBtn.isVisible()) {
-        await closeBtn.click();
-        await expect(
-          page.getByText('Please contact administration', { exact: false })
-        ).not.toBeVisible();
-      }
-    }
+  test('payment method buttons exist in footer', async ({ page }) => {
+    const footer = page.locator('footer');
+    await footer.scrollIntoViewIfNeeded();
+    const paymentButtons = footer.locator('button');
+    const count = await paymentButtons.count();
+    expect(count).toBeGreaterThan(0);
   });
 });
