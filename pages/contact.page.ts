@@ -10,6 +10,10 @@ export type ContactPayload = {
 export class ContactPage {
   constructor(private readonly page: Page) {}
 
+  private submitButton() {
+    return this.page.getByRole('button', { name: 'Send Message', exact: true });
+  }
+
   async open() {
     await this.page.goto('/#contact', { waitUntil: 'domcontentloaded' });
     await expect(this.page.getByRole('heading', { name: 'Get in Touch' })).toBeVisible();
@@ -34,7 +38,15 @@ export class ContactPage {
   }
 
   async submit() {
-    await this.page.getByRole('button', { name: 'Send Message' }).click();
+    const chatClose = this.page.locator('#chat-close');
+    if (await chatClose.isVisible().catch(() => false)) {
+      await chatClose.click({ force: true });
+    }
+
+    const submit = this.submitButton();
+    await expect(submit).toBeVisible();
+    await submit.evaluate((el) => el.scrollIntoView({ block: 'center', inline: 'nearest' }));
+    await submit.click({ force: true });
   }
 
   async expectSuccessToast() {

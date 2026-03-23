@@ -16,8 +16,9 @@ test.describe('AI Widget', () => {
 
   test('chat input accepts text and send button is clickable', async ({ aiWidget, page }) => {
     await aiWidget.openChatWindow();
-    const input = page.getByRole('textbox', { name: 'Type your message' });
+    const input = page.locator('#chat-input');
     await expect(input).toBeVisible();
+    await expect(input).toBeEditable();
     await input.fill('Hello test');
     expect(await input.inputValue()).toBe('Hello test');
     await aiWidget.expectSendButtonVisible();

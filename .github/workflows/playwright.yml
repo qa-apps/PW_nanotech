@@ -1,0 +1,81 @@
+name: Playwright CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * *'
+    - cron: '0 3 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Decide whether this scheduled run matches 10 PM New York time
+        id: run_window
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" != "schedule" ]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          local_hour="$(TZ=America/New_York date +%H)"
+          if [ "$local_hour" = "22" ]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Skip duplicate schedule slot
+        if: steps.run_window.outputs.should_run != 'true'
+        run: echo "Skipping this cron slot because it is not 10 PM in America/New_York."
+
+      - name: Checkout repository
+        if: steps.run_window.outputs.should_run == 'true'
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        if: steps.run_window.outputs.should_run == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        if: steps.run_window.outputs.should_run == 'true'
+        run: npm ci
+
+      - name: Install Playwright browser
+        if: steps.run_window.outputs.should_run == 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        if: steps.run_window.outputs.should_run == 'true'
+        run: npm test
+
+      - name: Upload Playwright report
+        if: always() && steps.run_window.outputs.should_run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Upload Playwright test results
+        if: always() && steps.run_window.outputs.should_run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-test-results
+          path: test-results/
+          if-no-files-found: ignore
+          retention-days: 14

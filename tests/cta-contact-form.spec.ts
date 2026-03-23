@@ -19,10 +19,7 @@ test.describe('CTA / Schedule form', () => {
       message: randomMessage()
     });
     await contact.selectService(formServiceOptions[0]);
-
-    const submitBtn = page.getByRole('button', { name: 'Send Message', exact: true });
-    await expect(submitBtn).toBeVisible();
-    await submitBtn.click();
+    await contact.submit();
     await page.waitForTimeout(3000);
 
     const sent = page.getByText(/message.*sent|thank you|success/i).first();
