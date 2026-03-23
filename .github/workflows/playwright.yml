@@ -17,6 +17,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
     steps:
       - name: Decide whether this scheduled run matches 10 PM New York time
@@ -79,3 +81,85 @@ jobs:
           path: test-results/
           if-no-files-found: ignore
           retention-days: 14
+
+      - name: Notify Slack on success
+        if: success() && steps.run_window.outputs.should_run == 'true' && secrets.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          STATUS_TEXT: passed
+          STATUS_EMOJI: ":white_check_mark:"
+        run: |
+          python - <<'PY' > slack-payload.json
+          import json, os
+          payload = {
+            "text": f"{os.environ['STATUS_EMOJI']} Playwright CI {os.environ['STATUS_TEXT']}",
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": (
+                    f"{os.environ['STATUS_EMOJI']} *Playwright CI {os.environ['STATUS_TEXT']}*\n"
+                    f"*Repo:* `{os.environ['GITHUB_REPOSITORY']}`\n"
+                    f"*Branch:* `{os.environ['GITHUB_REF_NAME']}`\n"
+                    f"*Event:* `{os.environ['GITHUB_EVENT_NAME']}`\n"
+                    f"*Actor:* `{os.environ['GITHUB_ACTOR']}`"
+                  ),
+                },
+              },
+              {
+                "type": "actions",
+                "elements": [
+                  {
+                    "type": "button",
+                    "text": {"type": "plain_text", "text": "Open workflow run"},
+                    "url": os.environ["RUN_URL"],
+                  }
+                ],
+              },
+            ],
+          }
+          print(json.dumps(payload))
+          PY
+          curl -sS -X POST -H 'Content-type: application/json' --data @slack-payload.json "$SLACK_WEBHOOK_URL"
+
+      - name: Notify Slack on failure
+        if: failure() && steps.run_window.outputs.should_run == 'true' && secrets.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          STATUS_TEXT: failed
+          STATUS_EMOJI: ":x:"
+        run: |
+          python - <<'PY' > slack-payload.json
+          import json, os
+          payload = {
+            "text": f"{os.environ['STATUS_EMOJI']} Playwright CI {os.environ['STATUS_TEXT']}",
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": (
+                    f"{os.environ['STATUS_EMOJI']} *Playwright CI {os.environ['STATUS_TEXT']}*\n"
+                    f"*Repo:* `{os.environ['GITHUB_REPOSITORY']}`\n"
+                    f"*Branch:* `{os.environ['GITHUB_REF_NAME']}`\n"
+                    f"*Event:* `{os.environ['GITHUB_EVENT_NAME']}`\n"
+                    f"*Actor:* `{os.environ['GITHUB_ACTOR']}`"
+                  ),
+                },
+              },
+              {
+                "type": "actions",
+                "elements": [
+                  {
+                    "type": "button",
+                    "text": {"type": "plain_text", "text": "Open workflow run"},
+                    "url": os.environ["RUN_URL"],
+                  }
+                ],
+              },
+            ],
+          }
+          print(json.dumps(payload))
+          PY
+          curl -sS -X POST -H 'Content-type: application/json' --data @slack-payload.json "$SLACK_WEBHOOK_URL"
