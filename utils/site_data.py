@@ -1,9 +1,9 @@
-from typing import List, Dict, Optional, TypedDict
+from typing import List, TypedDict
 
 class LinkExpectation(TypedDict, total=False):
     label: str
-    expectedUrlPart: Optional[str]
-    expectedText: Optional[str]
+    expectedUrlPart: str
+    expectedText: str
 
 class DropdownGroup(TypedDict):
     menuLabel: str
@@ -109,19 +109,6 @@ key_content_texts = [
     'Leading AI Automation & Intelligence',
     'AI Solutions Across Sectors',
     'Measurable Business Impact'
-]
-
-combo_card_labels = [
-    'ChatGPT',
-    'Gemini',
-    'Claude',
-    'Grok',
-    'Mistral',
-    'DeepSeek',
-    'Perplexity',
-    'Meta AI',
-    'Qwen',
-    'Kimi'
 ]
 
 form_service_options = [

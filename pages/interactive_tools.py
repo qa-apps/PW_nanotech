@@ -1,5 +1,5 @@
 import re
-from playwright.sync_api import Page, expect, Locator
+from playwright.sync_api import Page, expect
 from typing import Literal
 
 Mode = Literal['Auto', 'General', 'Code', 'Analyst', 'Research', 'Vision']
@@ -16,9 +16,12 @@ class InteractiveTools:
 
     def _accept_consent_if_present(self):
         overlay = self.page.locator('#chat-consent-overlay')
-        if overlay.is_visible():
-            self.page.locator('#chat-consent-checkbox').check()
-            self.page.locator('#chat-consent-agree').click()
+        try:
+            overlay.wait_for(state='visible', timeout=2000)
+        except Exception:
+            return
+        self.page.locator('#chat-consent-checkbox').check()
+        self.page.locator('#chat-consent-agree').click()
 
     def click_mode(self, mode: Mode):
         self._accept_consent_if_present()

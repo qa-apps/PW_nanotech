@@ -1,4 +1,4 @@
-from playwright.sync_api import Page, expect, Locator
+from playwright.sync_api import Page, expect
 from typing import Literal
 
 ThemeOption = Literal['Light', 'Dark', 'Aurora Blue', 'Glass Dawn']

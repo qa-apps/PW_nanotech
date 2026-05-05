@@ -1,12 +1,13 @@
+import os
+import re
 import pytest
 from playwright.sync_api import Page, expect
-import re
 from pages.user_auth import UserAuth
 from utils.random_data import random_company, random_email, random_message, random_name
 from utils.site_data import form_service_options
 
-TEST_EMAIL = 'test_email_001007@proton.me'
-TEST_PASSWORD = 'test_email_001007'
+TEST_EMAIL = os.environ.get('NANOTECH_TEST_EMAIL', 'test_email_001007@proton.me')
+TEST_PASSWORD = os.environ.get('NANOTECH_TEST_PASSWORD', 'test_email_001007')
 
 class TestContactFlow:
     @pytest.fixture(autouse=True)
@@ -26,9 +27,10 @@ class TestContactFlow:
         })
         auth.select_service(form_service_options[0])
         auth.submit_contact_form()
-        page.wait_for_timeout(3000)
-        sent = page.get_by_text(re.compile(r'message.*sent|thank you|success', re.IGNORECASE)).first
-        assert sent.is_visible() or True
+        sent = page.get_by_text(
+            re.compile(r'message.*sent|thank you|success', re.IGNORECASE)
+        ).first
+        expect(sent).to_be_visible(timeout=10_000)
 
 class TestAuthFlows:
     @pytest.fixture(autouse=True)
@@ -37,6 +39,11 @@ class TestAuthFlows:
 
     def test_login_modal_interaction(self, auth: UserAuth, page: Page):
         auth.open_login_modal()
-        page.wait_for_timeout(1000)
+        login_form = page.locator('#login-form')
+        expect(login_form).to_be_visible()
         auth.fill_login_form(TEST_EMAIL, TEST_PASSWORD)
         auth.click_login()
+        outcome = page.locator('#login-form .auth-error').or_(
+            page.get_by_text('My Dashboard', exact=False)
+        ).first
+        expect(outcome).to_be_visible(timeout=10_000)

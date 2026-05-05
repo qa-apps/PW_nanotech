@@ -1,3 +1,4 @@
+import re
 import pytest
 from playwright.sync_api import Page, expect
 from pages.landing_sections import LandingSections
@@ -15,20 +16,23 @@ def setup(landing: LandingSections):
 
 class TestNavigation:
     @pytest.mark.parametrize("group", header_dropdowns, ids=lambda g: g['menuLabel'])
-    def test_header_dropdowns(self, common: CommonComponents, group):
+    def test_header_dropdowns(self, page: Page, common: CommonComponents, group):
         common.open_dropdown(group['menuLabel'])
+        first_link_label = group['links'][0]['label']
+        expect(page.locator('nav').get_by_role('link', name=first_link_label).first).to_be_visible()
 
     @pytest.mark.parametrize("label", footer_link_labels)
-    def test_footer_links(self, common: CommonComponents, label: str):
-        common.click_footer_link(label)
+    def test_footer_links(self, page: Page, common: CommonComponents, label: str):
+        link = page.locator('footer').get_by_role('link', name=label, exact=True)
+        expect(link).to_be_visible()
+        expect(link).to_have_attribute('href', re.compile(r'.+'))
 
-    @pytest.mark.parametrize("hash,text", [
+    @pytest.mark.parametrize("anchor,text", [
         ('#about', 'Leading AI Automation'),
         ('#services', 'Autonomous Agent Services')
     ])
-    def test_anchor_navigation(self, page: Page, landing: LandingSections, hash, text):
-        landing.goto_home(hash)
-        page.wait_for_timeout(500)
+    def test_anchor_navigation(self, page: Page, landing: LandingSections, anchor, text):
+        landing.goto_home(anchor)
         expect(page.get_by_role('heading', name=text).first).to_be_visible()
 
 class TestLayout:

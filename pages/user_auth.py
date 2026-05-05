@@ -36,8 +36,9 @@ class UserAuth:
         self.page.get_by_role('button', name=re.compile(r'Login', re.IGNORECASE)).click()
 
     def fill_login_form(self, email: str, password: str):
-        self.page.locator('input[type="email"], input[placeholder*="Email"]').first.fill(email)
-        self.page.locator('input[type="password"]').first.fill(password)
+        form = self.page.locator('#login-form')
+        form.locator('input[type="email"], input[placeholder*="Email"]').first.fill(email)
+        form.locator('input[type="password"]').first.fill(password)
 
     def click_login(self):
         self.page.locator('#login-form button.auth-submit').click()
@@ -52,4 +53,4 @@ class UserAuth:
         ).first.click()
 
     def logout(self):
-        self.page.get_by_role('button', name=r'(?i)Logout').click()
+        self.page.get_by_role('button', name=re.compile(r'Logout', re.IGNORECASE)).click()

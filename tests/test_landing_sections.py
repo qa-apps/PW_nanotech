@@ -17,7 +17,7 @@ class TestHeroSection:
 
     def test_schedule_ai_assessment_link_has_correct_href(self, page: Page):
         link = page.get_by_role('link', name='Schedule AI Assessment')
-        assert '#contact' in link.get_attribute('href')
+        expect(link).to_have_attribute('href', re.compile(r'#contact'))
 
     def test_see_ai_in_action_link_is_visible(self, page: Page):
         link = page.get_by_role('link', name='See AI in Action')
@@ -28,7 +28,7 @@ class TestHeroSection:
 
     def test_learn_more_link_has_correct_href(self, page: Page):
         learn_more = page.get_by_role('link', name=re.compile(r'Learn More', re.IGNORECASE)).first
-        assert '#services' in learn_more.get_attribute('href')
+        expect(learn_more).to_have_attribute('href', re.compile(r'#services'))
 
 class TestAboutSection:
     def test_about_heading_is_visible(self, page: Page):
